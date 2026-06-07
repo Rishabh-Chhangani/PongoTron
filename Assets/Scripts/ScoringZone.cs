@@ -11,7 +11,7 @@ public class ScoringZone : MonoBehaviour
 
         if (ball != null)
         {
-            Debug.Log("Ball entered scoring zone!");
+            // Debug.Log("Ball entered scoring zone!");
             BaseEventData eventData = new BaseEventData(EventSystem.current);
             this.scoreTrigger.Invoke(eventData);
         }

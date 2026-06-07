@@ -1,21 +1,38 @@
-
 using UnityEngine;
-
 public class Paddle : MonoBehaviour
 {
-    public float speed = 10.0f;
-    protected Rigidbody2D _rigidbody;
-
-    private void Awake()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-    }
-
-    public void ResetPosition()
-    {
-        _rigidbody.position = new Vector2(_rigidbody.position.x, 0.0f);
-        _rigidbody.velocity = Vector2.zero;
-    }
-
-
+	public Rigidbody2D rb2d;
+	public int id;
+	public float moveSpeed = 2f;
+	
+	public void Update()
+	{
+		float value = ProcessInput();
+		Move(value);
+	}
+	
+	private float ProcessInput()
+	{
+		float movement = 0F;
+		switch(id)
+		{
+			case 1 :
+				movement = Input.GetAxis("MovePalyer1");
+				break;
+			case 2 : 
+				movement = Input.GetAxis("MovePlayer2");
+				break;
+		}
+		return movement;
+	}
+	
+	private void Move(float movement)
+	{
+		//rb2d.velocity.y = value *moveSpeed; unity does not allow this but he              said this "There are ways around this, like extension methods, but that's          more advanced and we're not going to discussthis for now  "
+		Vector2 velo = rb2d.velocity;
+		velo.y = moveSpeed * movement;
+		rb2d.velocity = velo;
+		
+	}
+	
 }

@@ -1,54 +1,51 @@
-using UnityEngine;
 
+using UnityEngine;
 public class Ball : MonoBehaviour
 {
-    private Rigidbody2D _rigidbody;
-    public float speed = 10.0f;
-
-    private void Awake()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-    }
+	public GameManager gameManager;
+	public Rigidbody2D rb2d;
+	public float maxInitialAngle = 0.67F;
+	public float moveSpeed = 4F;
+	public float maxStartY = 4F;
+	public float speedMulitplier = 1.1F;
+	
+    private float startX = 0F;
     private void Start()
     {
-        ResetPosition();
-        AddInitialForce();
+        InitialPush();
     }
-    public void ResetPosition()
+    public void InitialPush()
     {
-        _rigidbody.position = Vector3.zero;
-        _rigidbody.velocity = Vector3.zero;
+	    Vector2 dir = Random.value < 0.5F ? Vector2.left : Vector2.right;
+	    
+	    dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
+	    rb2d.velocity = dir * moveSpeed;
     }
-
-    // Update is called once per frame
-    public void AddInitialForce()
+    private void ResetBall()
     {
-        // float x = Random.value < 0.5f ? -1.0f : 1.0f;
-        // float y = Random.value < 0.5f ? Random.Range(-1.0f, -0.5f) : Random.Range(0.5f, 1.0f);
-
-        // Vector2 direction = new Vector2(x, y);
-        // _rigidbody.AddForce(direction * speed);
-        // Debug.Log("Start the Game!");
-
-         float x = Random.value < 0.5f ? -1f : 1f;
-    float y = Random.value < 0.5f
-        ? Random.Range(-1f, -0.5f)
-        : Random.Range(0.5f, 1f);
-
-    Vector2 direction = new Vector2(x, y).normalized;
-
-    _rigidbody.velocity = direction * speed;
-    }
-
-    private void FixedUpdate()
-    {
-        Debug.Log(_rigidbody.velocity.magnitude);
-    }
-
-    public void AddForce(Vector2 force)
-    {
-        _rigidbody.AddForce(force);
-    }
-
-} 
- 
+	    float posY = Random.Range(-maxStartY, maxStartY);
+	    Vector2 pos = new Vector2(startX, posY);
+	    transform.position = pos;
+	}
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		// Debug.Log("Ball hit trigger");
+		ScoreZone scoreZone = collision.GetComponent<ScoreZone>();
+		if (scoreZone != null)
+		{
+			gameManager.OnScoreZoneReached(scoreZone.id);
+			Debug.Log("Ball hit score zone");
+			ResetBall();
+			InitialPush();
+		}
+	}
+	
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		Paddle paddle = collision.collider.GetComponent<Paddle>();
+		if(paddle)
+		{
+			rb2d.velocity *= speedMulitplier;
+		}
+	}
+}
