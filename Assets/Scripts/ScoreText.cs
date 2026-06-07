@@ -7,5 +7,6 @@ public class ScoreText : MonoBehaviour
 		public void SetScore(int value)
 		{
 			text.text = value.ToString();
+            // Debug.Log("Score updated: " + value);
 		}
 }
