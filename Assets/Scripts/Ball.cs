@@ -29,7 +29,7 @@ public class Ball : MonoBehaviour
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		// Debug.Log("Ball hit trigger");
+		Debug.Log("Ball hit trigger");
 		ScoreZone scoreZone = collision.GetComponent<ScoreZone>();
 		if (scoreZone != null)
 		{
