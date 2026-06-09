@@ -17,6 +17,7 @@ public class Ball : MonoBehaviour
     public void InitialPush()
     {
 	    Vector2 dir = Random.value < 0.5F ? Vector2.left : Vector2.right;
+	    // Vector2 dir = Vector2.left;
 	    
 	    dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
 	    rb2d.velocity = dir * moveSpeed;
