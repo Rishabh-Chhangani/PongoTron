@@ -30,12 +30,12 @@ public class Ball : MonoBehaviour
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Debug.Log("Ball hit trigger");
+		// Debug.Log("Ball hit trigger");
 		ScoreZone scoreZone = collision.GetComponent<ScoreZone>();
 		if (scoreZone != null)
 		{
 			gameManager.OnScoreZoneReached(scoreZone.id);
-			Debug.Log("Ball hit score zone");
+			// Debug.Log("Ball hit score zone");
 			ResetBall();
 			InitialPush();
 		}
@@ -43,10 +43,21 @@ public class Ball : MonoBehaviour
 	
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
+
+		Debug.Log(
+			"Paddle hit:"+ collision.gameObject.name +
+			"Before HitVelocity :" + rb2d.velocity 
+			);
 		Paddle paddle = collision.collider.GetComponent<Paddle>();
 		if(paddle)
 		{
 			rb2d.velocity *= speedMulitplier;
 		}
+
+		
+		Debug.Log(
+			"Paddle hit:"+ collision.gameObject.name +
+			"Before HitVelocity :" + rb2d.velocity 
+			);
 	}
 }
