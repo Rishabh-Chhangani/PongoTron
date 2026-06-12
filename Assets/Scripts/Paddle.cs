@@ -5,6 +5,19 @@ public class Paddle : MonoBehaviour
 	public int id;
 	public float moveSpeed = 2f;
 
+	private Vector3 startPosition;
+
+
+	private void Start()
+	{
+		startPosition = transform.position;
+		GameManager.instance.onReset += ResetPosition;
+	}
+
+	private void ResetPosition()
+	{
+		transform.position = startPosition;
+	}
 
     private void Awake()
     {
@@ -33,7 +46,7 @@ public class Paddle : MonoBehaviour
 	
 	private void Move(float movement)
 	{
-		 Debug.Log($"Paddle: {gameObject.name}, rb2d = {rb2d}");
+		//  Debug.Log($"Paddle: {gameObject.name}, rb2d = {rb2d}");
 		//rb2d.velocity.y = value *moveSpeed; unity does not allow this but he              said this "There are ways around this, like extension methods, but that's          more advanced and we're not going to discussthis for now  "
 		Vector2 velo = rb2d.velocity;
 		velo.y = moveSpeed * movement;

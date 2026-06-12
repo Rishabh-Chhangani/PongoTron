@@ -2,7 +2,7 @@
 using UnityEngine;
 public class Ball : MonoBehaviour
 {
-	public GameManager gameManager;
+	
 	public Rigidbody2D rb2d;
 	public float maxInitialAngle = 0.67F;
 	public float moveSpeed = 4F;
@@ -13,7 +13,14 @@ public class Ball : MonoBehaviour
     private void Start()
     {
         InitialPush();
+		GameManager.instance.onReset += ResetBall;
     }
+
+	private void ResetBall()
+	{
+		ResetBallPosition();
+		InitialPush();
+	}
     public void InitialPush()
     {
 	    Vector2 dir = Random.value < 0.5F ? Vector2.left : Vector2.right;
@@ -22,7 +29,7 @@ public class Ball : MonoBehaviour
 	    dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
 	    rb2d.velocity = dir * moveSpeed;
     }
-    private void ResetBall()
+    private void ResetBallPosition()
     {
 	    float posY = Random.Range(-maxStartY, maxStartY);
 	    Vector2 pos = new Vector2(startX, posY);
@@ -34,10 +41,9 @@ public class Ball : MonoBehaviour
 		ScoreZone scoreZone = collision.GetComponent<ScoreZone>();
 		if (scoreZone != null)
 		{
-			gameManager.OnScoreZoneReached(scoreZone.id);
+			GameManager.instance.OnScoreZoneReached(scoreZone.id);
 			// Debug.Log("Ball hit score zone");
-			ResetBall();
-			InitialPush();
+
 		}
 	}
 	
