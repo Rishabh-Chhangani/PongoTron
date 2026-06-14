@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2008536668249513190}
   - component: {fileID: 2008536668249513189}
   - component: {fileID: -7034860135155974607}
+  - component: {fileID: 2118472246470856117}
   m_Layer: 5
   m_Name: ScoreText
   m_TagString: Untagged
@@ -76,7 +77,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4287795861
   m_fontColor: {r: 0.5849056, g: 0.57111067, b: 0.57111067, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -148,4 +149,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdbd2d78d2255de48940917624be49a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
+  text: {fileID: 2008536668249513189}
+  animator: {fileID: 2118472246470856117}
+--- !u!95 &2118472246470856117
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008536668249513211}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f8a2570b719ca354486d1c99969779d1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

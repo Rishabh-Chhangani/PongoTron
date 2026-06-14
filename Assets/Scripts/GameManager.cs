@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
 			scorePlayer2++;
 			
 		UpdateScore();
+		HighLightScore(id);
 	}
 	
 	private void UpdateScore()
@@ -48,4 +49,16 @@ public class GameManager : MonoBehaviour
 		scoreTextRight.SetScore(scorePlayer2);
 	}
 	
+
+	public void HighLightScore(int id)
+	{
+		if (id == 1)
+		{
+			scoreTextLeft.Highlight();
+		}
+		else
+		{
+			scoreTextRight.Highlight();
+		}
+	}
 }
