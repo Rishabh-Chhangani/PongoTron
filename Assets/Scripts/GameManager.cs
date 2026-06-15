@@ -5,10 +5,13 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance;
 	public int scorePlayer1, scorePlayer2;
+
+	public GameUI gameUI;
 	// Score player 1 id = 1 Right Score Zone
 	// Score player 2 id = 2 Left Score Zone
 	
-	public ScoreText scoreTextLeft, scoreTextRight;
+	public int maxScore = 4;
+	
 	public Action onReset;	
 
 	public void Awake()
@@ -39,26 +42,24 @@ public class GameManager : MonoBehaviour
 		if(id == 2)
 			scorePlayer2++;
 			
-		UpdateScore();
-		HighLightScore(id);
+		gameUI.UpdateScore(scorePlayer1,scorePlayer2);
+		gameUI.HighLightScore(id);
+		CheckWin();
 	}
-	
-	private void UpdateScore()
+
+	private void CheckWin()
 	{
-		scoreTextLeft.SetScore(scorePlayer1);
-		scoreTextRight.SetScore(scorePlayer2);
+		int winnerID = scorePlayer1 == maxScore ? 1 : scorePlayer2 == maxScore ? 2 : 0;
+
+		if (winnerID != 0)
+		{
+			 gameUI.OnGameEnds(winnerID);
+		}
 	}
 	
 
-	public void HighLightScore(int id)
-	{
-		if (id == 1)
-		{
-			scoreTextLeft.Highlight();
-		}
-		else
-		{
-			scoreTextRight.Highlight();
-		}
-	}
+	
+	
+
+	
 }
