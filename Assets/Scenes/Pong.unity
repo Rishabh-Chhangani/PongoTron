@@ -147,7 +147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 20
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalScale.y
@@ -163,7 +163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 5.35
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1081,8 +1081,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   asSounds: {fileID: 1091195485}
-  wallSound: {fileID: 8300000, guid: 05bac98aea8883e43835ce2092d03fbf, type: 3}
-  paddleSound: {fileID: 8300000, guid: 96113dec3b1e42b449c191272e664d66, type: 3}
   winSound: {fileID: 8300000, guid: 74c898ff95f737648a2cce2041518213, type: 3}
   scoreSound: {fileID: 8300000, guid: e9aed8eba7735524aae5ae1ffe188f3f, type: 3}
 --- !u!1 &519420028
@@ -1172,7 +1170,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 5.4
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -2311,7 +2309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2008536668249513188, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -40
+      value: -80
       objectReference: {fileID: 0}
     - target: {fileID: 2008536668249513188, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2339,7 +2337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2008536668249513211, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
       propertyPath: m_Name
-      value: ScoreTextPlayer2
+      value: Player_2_Text
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
@@ -3178,7 +3176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 20
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalScale.y
@@ -3194,7 +3192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5
+      value: -5.35
       objectReference: {fileID: 0}
     - target: {fileID: 2753076967152440261, guid: 5e73fdb520add35438b0b3985b863b5e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3726,7 +3724,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2008536668249513188, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -40
+      value: -80
       objectReference: {fileID: 0}
     - target: {fileID: 2008536668249513188, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3766,7 +3764,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2008536668249513211, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
       propertyPath: m_Name
-      value: ScoreTextPlayer1
+      value: Player_1_Text
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6805c0d9aab6d304c8f2c5c7c514ea06, type: 3}
