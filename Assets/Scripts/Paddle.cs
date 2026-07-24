@@ -18,7 +18,7 @@ public class Paddle : MonoBehaviour
 	{
 		transform.position = startPosition;
 	}
-
+ 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();

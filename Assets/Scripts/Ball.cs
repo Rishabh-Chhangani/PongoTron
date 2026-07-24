@@ -8,12 +8,13 @@ public class Ball : MonoBehaviour
 	public float moveSpeed = 4F;
 	public float maxStartY = 4F;
 	public float speedMulitplier = 1.1F;
+	public BallAudio ballAudio;
 	
     private float startX = 0F;
     private void Start()
     {
-        InitialPush();
 		GameManager.instance.onReset += ResetBall;
+        GameManager.instance.gameUI.onStartGame += ResetBall;
     }
 
 	private void ResetBall()
@@ -50,20 +51,29 @@ public class Ball : MonoBehaviour
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
 
-		Debug.Log(
-			"Paddle hit:"+ collision.gameObject.name +
-			"Before HitVelocity :" + rb2d.velocity 
-			);
+		// Debug.Log(
+		// 	"Paddle hit:"+ collision.gameObject.name +
+		// 	"Before HitVelocity :" + rb2d.velocity 
+		// 	);
 		Paddle paddle = collision.collider.GetComponent<Paddle>();
 		if(paddle)
 		{
+			ballAudio.PlayPaddleSound();
 			rb2d.velocity *= speedMulitplier;
 		}
 
+		Wall wall = collision.collider.GetComponent<Wall>();
+		if(wall)
+		{
+			ballAudio.PlayWallSound();
+			
+		}
+
+
 		
-		Debug.Log(
-			"Paddle hit:"+ collision.gameObject.name +
-			"Before HitVelocity :" + rb2d.velocity 
-			);
+		// Debug.Log(
+		// 	"Paddle hit:"+ collision.gameObject.name +
+		// 	"Before HitVelocity :" + rb2d.velocity 
+		// 	);
 	}
 }
