@@ -40,11 +40,6 @@ public class Ball : MonoBehaviour
     _rigidbody.velocity = direction * speed;
     }
 
-    private void FixedUpdate()
-    {
-        Debug.Log(_rigidbody.velocity.magnitude);
-    }
-
     public void AddForce(Vector2 force)
     {
         _rigidbody.AddForce(force);

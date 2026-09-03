@@ -951,7 +951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07acd0294e2fb134b864584e3a8cbe6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  speed: 8
 --- !u!1 &486534521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1302,11 +1302,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3383305275300951062, guid: 3aed7cdbc5ac88648b7b515a753d21e1, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3383305275300951062, guid: 3aed7cdbc5ac88648b7b515a753d21e1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12
+      value: -11.74
       objectReference: {fileID: 0}
     - target: {fileID: 3383305275300951062, guid: 3aed7cdbc5ac88648b7b515a753d21e1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1442,7 +1442,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -2885,11 +2885,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3383305275300951062, guid: 3aed7cdbc5ac88648b7b515a753d21e1, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3383305275300951062, guid: 3aed7cdbc5ac88648b7b515a753d21e1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.3
+      value: 12.04
       objectReference: {fileID: 0}
     - target: {fileID: 3383305275300951062, guid: 3aed7cdbc5ac88648b7b515a753d21e1, type: 3}
       propertyPath: m_LocalPosition.y

@@ -4,14 +4,13 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update dnafek
     public Ball ball;
     public Text playerScoreText;
     public Text computerScoreText;
 
     [Header("Win Condition")]
     public GameObject gameOverPanel;
-    // public UnityEngine.UI.Text gameOverText;
+
     public int pointsToWin = 5;
     public TMPro.TextMeshProUGUI winnerText;
 
