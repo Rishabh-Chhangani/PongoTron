@@ -16,4 +16,4 @@ public class ScoringZone : MonoBehaviour
             this.scoreTrigger.Invoke(eventData);
         }
     }
-}
+}   

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+
+    public BallAudio ballAudio;
     private Rigidbody2D _rigidbody;
     public float speed = 10.0f;
 
@@ -11,7 +13,7 @@ public class Ball : MonoBehaviour
     }
     private void Start()
     {
-        ResetPosition();
+       
         AddInitialForce();
     }
     public void ResetPosition()
@@ -43,6 +45,22 @@ public class Ball : MonoBehaviour
     public void AddForce(Vector2 force)
     {
         _rigidbody.AddForce(force);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Paddle paddle = collision.gameObject.GetComponent<Paddle>();
+        if (paddle != null)
+        {
+            ballAudio.PlayPaddleSound();
+        }
+
+        Wall wall = collision.gameObject.GetComponent<Wall>();
+        if (wall != null)
+        {
+            ballAudio.PlayWallSound();
+        }
+
     }
 
 } 

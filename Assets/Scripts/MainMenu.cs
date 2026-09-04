@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Medium mode selected");
     }
 
-    public void SetHard()
+    public void SetHard() 
     {
         PlayerPrefs.SetInt("Difficulty",2);
         PlayerPrefs.Save();
