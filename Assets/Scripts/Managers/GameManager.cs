@@ -21,6 +21,22 @@ public class GameManager : MonoBehaviour
     public Paddle playerPaddle;
     public Paddle computerPaddle;
 
+    [SerializeField]private GameAudio gameAudio;
+
+
+    private void Awake()
+    {
+        if(gameAudio == null)
+        {
+            gameAudio = GetComponent<GameAudio>();
+        }
+        if(gameObject == null)
+        {
+            Debug.LogError("GameManager GameObject is null!");
+        }
+
+    }
+
     void Start()
     {
         // SINGLETON PATTERN - Destroy duplicates
@@ -54,12 +70,14 @@ public class GameManager : MonoBehaviour
 
         if (_playerScore >= pointsToWin)
         {
+            gameAudio.PlayWinSound();
             winnerText.text = "PLAYER 1 WINS!";
             Time.timeScale = 0;
             gameOverPanel.SetActive(true);
         }
         else
         {
+            gameAudio.PlayScoreSound();
             ResetRound();
         }
     }
@@ -70,12 +88,15 @@ public class GameManager : MonoBehaviour
 
         if (_computerScore >= pointsToWin)
         {
+            gameAudio.PlayWinSound();
             winnerText.text = "PLAYER 2 WINS!";
             Time.timeScale = 0;
             gameOverPanel.SetActive(true);
         }
         else
         {
+            Debug.Log("GameAudio reference: " + gameAudio);
+            gameAudio.PlayScoreSound();
             ResetRound();
         }
     }
