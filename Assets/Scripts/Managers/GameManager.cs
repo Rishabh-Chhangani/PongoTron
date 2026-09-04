@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public Ball ball;
-    public Text playerScoreText;
-    public Text computerScoreText;
+    public ScoreText playerScoreText;
+    public ScoreText computerScoreText;
 
     [Header("Win Condition")]
     public GameObject gameOverPanel;
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         if (playerScoreText != null)
         {
             _playerScore = 0;
-            playerScoreText.text = "0";
+            playerScoreText.SetScore(_playerScore);
 
         }
         // Reset scores on fresh game start
@@ -58,14 +58,15 @@ public class GameManager : MonoBehaviour
         if (computerScoreText != null)
         {
             _computerScore = 0;
-            computerScoreText.text = "0";
+            computerScoreText.SetScore(_computerScore);
         }
     }
 
     public void PlayerScore()
     {
         _playerScore++;
-        playerScoreText.text = _playerScore.ToString();
+        playerScoreText.SetScore(_playerScore);
+        playerScoreText.Highlight();
         Debug.Log($"Player Score:{_playerScore}, Win points {pointsToWin} ");
 
         if (_playerScore >= pointsToWin)
@@ -84,7 +85,8 @@ public class GameManager : MonoBehaviour
     public void ComputerScore()
     {
         _computerScore++;
-        computerScoreText.text = _computerScore.ToString();
+        computerScoreText.SetScore(_computerScore);
+        computerScoreText.Highlight();
 
         if (_computerScore >= pointsToWin)
         {
@@ -114,8 +116,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("Play Again Clicked");
         _playerScore = 0;
         _computerScore = 0;
-        playerScoreText.text = "0";
-        computerScoreText.text = "0";
+      
+        playerScoreText.SetScore(_playerScore);
+        computerScoreText.SetScore(_computerScore);
         gameOverPanel.SetActive(false);
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
