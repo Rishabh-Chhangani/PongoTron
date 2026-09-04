@@ -23,19 +23,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]private GameAudio gameAudio;
 
-
-    private void Awake()
-    {
-        if(gameAudio == null)
-        {
-            gameAudio = GetComponent<GameAudio>();
-        }
-        if(gameObject == null)
-        {
-            Debug.LogError("GameManager GameObject is null!");
-        }
-
-    }
+    [SerializeField] private ScoringZone playerScoringZone;
+    [SerializeField] private ScoringZone computerScoringZone;
 
     void Start()
     {
@@ -51,7 +40,6 @@ public class GameManager : MonoBehaviour
         {
             _playerScore = 0;
             playerScoreText.SetScore(_playerScore);
-
         }
         // Reset scores on fresh game start
 
@@ -60,48 +48,35 @@ public class GameManager : MonoBehaviour
             _computerScore = 0;
             computerScoreText.SetScore(_computerScore);
         }
+
+        if (playerScoringZone != null)
+        {
+            playerScoringZone.OnBallScored += HandlePlayerScored;
+        }
+
+        if (computerScoringZone != null) // fixed null-check
+        {
+            computerScoringZone.OnBallScored += HandleComputerScored;
+        }
     }
 
-    public void PlayerScore()
+
+    private void Awake()
     {
-        _playerScore++;
-        playerScoreText.SetScore(_playerScore);
-        playerScoreText.Highlight();
-        Debug.Log($"Player Score:{_playerScore}, Win points {pointsToWin} ");
+        if(gameAudio == null)
+        {
+            gameAudio = GetComponent<GameAudio>();
+        }
+        if(gameObject == null)
+        {
+            Debug.LogError("GameManager GameObject is null!");
+        }
 
-        if (_playerScore >= pointsToWin)
-        {
-            gameAudio.PlayWinSound();
-            winnerText.text = "PLAYER 1 WINS!";
-            Time.timeScale = 0;
-            gameOverPanel.SetActive(true);
-        }
-        else
-        {
-            gameAudio.PlayScoreSound();
-            ResetRound();
-        }
     }
-    public void ComputerScore()
-    {
-        _computerScore++;
-        computerScoreText.SetScore(_computerScore);
-        computerScoreText.Highlight();
 
-        if (_computerScore >= pointsToWin)
-        {
-            gameAudio.PlayWinSound();
-            winnerText.text = "PLAYER 2 WINS!";
-            Time.timeScale = 0;
-            gameOverPanel.SetActive(true);
-        }
-        else
-        {
-            Debug.Log("GameAudio reference: " + gameAudio);
-            gameAudio.PlayScoreSound();
-            ResetRound();
-        }
-    }
+   
+
+    
 
     private void ResetRound()
     {
@@ -129,5 +104,74 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         PlayerPrefs.DeleteKey("Mode");
         SceneManager.LoadScene(0);
+    }
+
+    private void HandlePlayerScored(ScoringZone zone)
+    {
+        PlayerScore();
+    }
+
+    private void HandleComputerScored(ScoringZone zone)
+    {
+        ComputerScore();
+    }
+
+
+
+
+    public void PlayerScore()
+    {
+        _playerScore++;
+        playerScoreText.SetScore(_playerScore);
+        playerScoreText.Highlight();
+        Debug.Log($"Player Score:{_playerScore}, Win points {pointsToWin} ");
+
+        if (_playerScore >= pointsToWin)
+        {
+            gameAudio.PlayWinSound();
+            winnerText.text = "PLAYER 1 WINS!";
+            Time.timeScale = 0;
+            gameOverPanel.SetActive(true);
+        }
+        else
+        {
+            gameAudio.PlayScoreSound();
+            ResetRound();
+        }
+    }
+
+    public void ComputerScore()
+    {
+        _computerScore++;
+        computerScoreText.SetScore(_computerScore);
+        computerScoreText.Highlight();
+
+        if (_computerScore >= pointsToWin)
+        {
+            gameAudio.PlayWinSound();
+            winnerText.text = "PLAYER 2 WINS!";
+            Time.timeScale = 0;
+            gameOverPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("GameAudio reference: " + gameAudio);
+            gameAudio.PlayScoreSound();
+            ResetRound();
+        }
+    }
+
+
+    private void OnDestroy()
+    {
+        if (playerScoringZone != null)
+        {
+            playerScoringZone.OnBallScored -= HandlePlayerScored;
+        }
+
+        if (computerScoringZone != null)
+        {
+            computerScoringZone.OnBallScored -= HandleComputerScored;
+        }
     }
 }

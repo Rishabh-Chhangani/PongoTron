@@ -1,9 +1,12 @@
+using System;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ScoringZone : MonoBehaviour
 {
-    public EventTrigger.TriggerEvent scoreTrigger;
+
+    public event Action<ScoringZone> OnBallScored;
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
@@ -12,8 +15,7 @@ public class ScoringZone : MonoBehaviour
         if (ball != null)
         {
             Debug.Log("Ball entered scoring zone!");
-            BaseEventData eventData = new BaseEventData(EventSystem.current);
-            this.scoreTrigger.Invoke(eventData);
+            OnBallScored?.Invoke(this);
         }
     }
 }   
