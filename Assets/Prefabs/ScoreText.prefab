@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2008536668249513188}
   - component: {fileID: 2008536668249513190}
   - component: {fileID: 2008536668249513189}
-  - component: {fileID: -7034860135155974607}
   - component: {fileID: 2118472246470856117}
+  - component: {fileID: 6225366096418744897}
   m_Layer: 5
   m_Name: ScoreText
   m_TagString: Untagged
@@ -137,20 +137,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &-7034860135155974607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2008536668249513211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdbd2d78d2255de48940917624be49a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 2008536668249513189}
-  animator: {fileID: 2118472246470856117}
 --- !u!95 &2118472246470856117
 Animator:
   serializedVersion: 5
@@ -172,3 +158,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6225366096418744897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008536668249513211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25e93bbaad393b24f89f7968e7f77223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerIndex: 1
+  scoreText: {fileID: 2008536668249513189}
+  animator: {fileID: 2118472246470856117}

@@ -1,35 +1,30 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
+    // --BroadCasters--
+    public static event Action<int, int> OnScoreUpdated;
+    public static event Action<int> OnGameWon;
+    public static event Action OnRoundReset;
+
+    //--Core Logic Variables--
     public Ball ball;
-    public ScoreText playerScoreText;
-    public ScoreText computerScoreText;
-
-    [Header("Win Condition")]
-    public GameObject gameOverPanel;
-
+    public Paddle playerPaddle;
+    public Paddle computerPaddle;
     public int pointsToWin = 5;
-    public TMPro.TextMeshProUGUI winnerText;
-
 
     private int _playerScore;
     private int _computerScore;
 
-    public Paddle playerPaddle;
-    public Paddle computerPaddle;
-
-    [SerializeField]private GameAudio gameAudio;
 
 
     private void Awake()
     {
-        if(gameAudio == null)
-        {
-            gameAudio = GetComponent<GameAudio>();
-        }
+       
         if(gameObject == null)
         {
             Debug.LogError("GameManager GameObject is null!");
@@ -47,58 +42,42 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (playerScoreText != null)
-        {
-            _playerScore = 0;
-            playerScoreText.SetScore(_playerScore);
 
-        }
-        // Reset scores on fresh game start
+        _playerScore = 0;
+        _computerScore = 0;
 
-        if (computerScoreText != null)
-        {
-            _computerScore = 0;
-            computerScoreText.SetScore(_computerScore);
-        }
+        
+
     }
 
     public void PlayerScore()
     {
         _playerScore++;
-        playerScoreText.SetScore(_playerScore);
-        playerScoreText.Highlight();
+        OnScoreUpdated?.Invoke(1, _playerScore);
+        
         Debug.Log($"Player Score:{_playerScore}, Win points {pointsToWin} ");
 
         if (_playerScore >= pointsToWin)
         {
-            gameAudio.PlayWinSound();
-            winnerText.text = "PLAYER 1 WINS!";
-            Time.timeScale = 0;
-            gameOverPanel.SetActive(true);
+            OnGameWon?.Invoke(1);
         }
         else
         {
-            gameAudio.PlayScoreSound();
             ResetRound();
         }
     }
     public void ComputerScore()
     {
         _computerScore++;
-        computerScoreText.SetScore(_computerScore);
-        computerScoreText.Highlight();
+        OnScoreUpdated?.Invoke(2, _computerScore);
+        
 
         if (_computerScore >= pointsToWin)
         {
-            gameAudio.PlayWinSound();
-            winnerText.text = "PLAYER 2 WINS!";
-            Time.timeScale = 0;
-            gameOverPanel.SetActive(true);
+            OnGameWon?.Invoke(2);
         }
         else
         {
-            Debug.Log("GameAudio reference: " + gameAudio);
-            gameAudio.PlayScoreSound();
             ResetRound();
         }
     }
@@ -109,17 +88,15 @@ public class GameManager : MonoBehaviour
         this.computerPaddle.ResetPosition();
         this.ball.ResetPosition();
         this.ball.AddInitialForce();
+
+        OnRoundReset?.Invoke();
     }
 
+
+    // --Scene Navigation--
     public void PlayAgain()
     {
         Debug.Log("Play Again Clicked");
-        _playerScore = 0;
-        _computerScore = 0;
-      
-        playerScoreText.SetScore(_playerScore);
-        computerScoreText.SetScore(_computerScore);
-        gameOverPanel.SetActive(false);
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
