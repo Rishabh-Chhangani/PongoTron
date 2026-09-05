@@ -23,7 +23,6 @@ public class Ball : MonoBehaviour
     }
 
 
-
     public void ResetPosition()
     {
         float randomY = Random.Range(-maxStartY, maxStartY);
@@ -62,7 +61,6 @@ public class Ball : MonoBehaviour
         {
             ballAudio.PlayWallSound();
         }
-
     }
 
 
