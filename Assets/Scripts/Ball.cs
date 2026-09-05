@@ -1,9 +1,18 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Ball : MonoBehaviour
 {
+    public enum HitType
+    {
+        Paddle,
+        Wall
+    }
 
-    public BallAudio ballAudio;
+    public static event Action<HitType> OnBallCollided;
+
+    
     private Rigidbody2D _rigidbody;
     public float speed = 10.0f;
 
@@ -52,14 +61,14 @@ public class Ball : MonoBehaviour
         Paddle paddle = collision.gameObject.GetComponent<Paddle>();
         if (paddle != null)
         {
-            ballAudio.PlayPaddleSound();
+            OnBallCollided?.Invoke(HitType.Paddle);
             IncreaseSpeed();
         }
 
         Wall wall = collision.gameObject.GetComponent<Wall>();
         if (wall != null)
         {
-            ballAudio.PlayWallSound();
+            OnBallCollided?.Invoke(HitType.Wall);
         }
     }
 
