@@ -61,4 +61,5 @@
   <Project Path="Unity.ShaderGraph.Utilities.csproj" />
   <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />
   <Project Path="Unity.2D.Aseprite.Common.csproj" />
+  <Project Path="PongTron.EditMode.Tests.csproj" />
 </Solution>

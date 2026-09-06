@@ -54,8 +54,6 @@ public class GameManager : MonoBehaviour
     {
         _playerScore++;
         OnScoreUpdated?.Invoke(1, _playerScore);
-        
-        Debug.Log($"Player Score:{_playerScore}, Win points {pointsToWin} ");
 
         if (_playerScore >= pointsToWin)
         {

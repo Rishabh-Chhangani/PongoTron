@@ -34,6 +34,10 @@ public class Ball : MonoBehaviour
 
     public void ResetPosition()
     {
+        if(_rigidbody == null)
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
         float randomY = Random.Range(-maxStartY, maxStartY);
 
         _rigidbody.position = new Vector2(0f, randomY);
