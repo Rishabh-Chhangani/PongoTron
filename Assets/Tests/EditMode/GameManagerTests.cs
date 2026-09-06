@@ -6,21 +6,74 @@ using UnityEngine.TestTools;
 
 public class GameManagerTest
 {
-
-
-
     // Variables to track the event firing and the recorded values
     private bool _eventFired;
     private int _recordedPlayerIndex;
     private int _recordedScore;
 
-    // A mock listener to simulate a subscriber to the event
+
+    private bool _isGameOverEventFired;
+    private int _recordedWinnerIndex;
+    
+     // A mock listener to simulate a subscriber to the event
     private void MockScoreListener(int playerIndex, int newScore)
     {
         _eventFired = true;
         _recordedPlayerIndex = playerIndex;
         _recordedScore = newScore;
     }
+
+     private void MockGameOverListener(int _winnerplayerIndex)
+    {
+        _isGameOverEventFired = true;
+        _recordedWinnerIndex = _winnerplayerIndex;
+    }
+
+    [Test]
+    public void PlayerScore_ReachedWinCondtion_TriggersGameOverEvent()
+    {
+        // 1. ARRANGE: Set up the environment
+        GameObject gmObject = new GameObject("TestGameManager");
+        GameManager gm = gmObject.AddComponent<GameManager>();
+
+        //Creating Dummy game objects for ball, PlayerPaddle, CoputerPaddle.To pass the NullPointerException.
+        GameObject dummyPlayerPaddle = new GameObject("DummyPlayerPaddle");
+        GameObject dummyComputerPaddle = new GameObject("DummyComputerPaddle");
+        GameObject dummyBall = new GameObject("DummyBall");
+
+        //Rigidbody is assigned to them to avoid NullPointerException when the Paddle tries to access them.
+        dummyPlayerPaddle.AddComponent<Rigidbody2D>();
+        dummyComputerPaddle.AddComponent<Rigidbody2D>();
+        dummyBall.AddComponent<Rigidbody2D>();
+
+        // Assign the dummy objects to the GameManager
+        gm.playerPaddle = dummyPlayerPaddle.AddComponent<Paddle>();
+        gm.computerPaddle = dummyComputerPaddle.AddComponent<Paddle>();
+        gm.ball = dummyBall.AddComponent<Ball>();
+
+        _isGameOverEventFired = false;
+
+        // Subscribe to the OnGameOver event
+        GameManager.OnGameWon += MockGameOverListener;
+
+        // 2. ACT: Force the player to score until they reach the win condition
+        for (int i = 0; i < gm.pointsToWin; i++)
+        {
+            gm.PlayerScore();
+        }
+
+        // 3. ASSERT: Check if the game over event was fired and the correct winner index was recorded
+        Assert.IsTrue(_isGameOverEventFired, "The game over event did not fire!");
+        Assert.AreEqual(1, _recordedWinnerIndex, "The event broadcasted the wrong winner index!");
+
+        // 4. CLEANUP: Destroy the object and unsubscribe so it doesn't affect other tests
+        GameManager.OnGameWon -= MockGameOverListener; 
+        Object.DestroyImmediate(gmObject);
+        Object.DestroyImmediate(dummyPlayerPaddle);
+        Object.DestroyImmediate(dummyComputerPaddle);
+        Object.DestroyImmediate(dummyBall);
+    }
+
 
     // A Test behaves as an ordinary method
     [Test]
