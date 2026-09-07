@@ -94,7 +94,6 @@ public class GameManager : MonoBehaviour
     // --Scene Navigation--
     public void PlayAgain()
     {
-        Debug.Log("Play Again Clicked");
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

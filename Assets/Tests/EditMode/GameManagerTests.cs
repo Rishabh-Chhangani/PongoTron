@@ -6,16 +6,78 @@ using UnityEngine.TestTools;
 
 public class GameManagerTest
 {
-    // Variables to track the event firing and the recorded values
+    // Setup Variables
+    private GameObject _gmObject;
+    private GameManager _gm;
+
+    private GameObject _dummyPlayerPaddle;
+    private GameObject _dummyComputerPaddle;
+    private GameObject _dummyBall;
+
+    // Tracking Variables
     private bool _eventFired;
     private int _recordedPlayerIndex;
     private int _recordedScore;
-
-
     private bool _isGameOverEventFired;
     private int _recordedWinnerIndex;
-    
-     // A mock listener to simulate a subscriber to the event
+    private bool _isResetRoundFired;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _gmObject = new GameObject("TestGameManger");
+        _gm = _gmObject.AddComponent<GameManager>();
+
+        // Create dummy game objects for the paddles and ball
+        _dummyPlayerPaddle = new GameObject("PlayerPaddle");
+        _dummyComputerPaddle = new GameObject("ComputerPaddle");
+        _dummyBall = new GameObject("Ball");
+
+        // Add Rigidbody2D to avoid NRE
+        _dummyPlayerPaddle.AddComponent<Rigidbody2D>();
+        _dummyComputerPaddle.AddComponent<Rigidbody2D>();
+        _dummyBall.AddComponent<Rigidbody2D>();
+
+        // Add and store the Paddle/Ball components
+        _gm.playerPaddle = _dummyPlayerPaddle.AddComponent<Paddle>();
+        _gm.computerPaddle = _dummyComputerPaddle.AddComponent<Paddle>();
+        _gm.ball = _dummyBall.AddComponent<Ball>();
+
+        // Reset tracking variables for a clean slate
+        _eventFired = false;
+        _isGameOverEventFired = false;
+        _isResetRoundFired = false;
+        _recordedPlayerIndex = -1;
+        _recordedScore = -1;
+        _recordedWinnerIndex = -1;
+    }
+
+    [TearDown]
+    public void Teardown()
+    {
+        // 1. Unsubscribe from all events
+        GameManager.OnRoundReset -= MockResetRoundListener;
+        GameManager.OnGameWon -= MockGameOverListener;
+        GameManager.OnScoreUpdated -= MockScoreListener;
+
+        // 2. Reset Global Unity States
+        Time.timeScale = 1f;
+        PlayerPrefs.DeleteKey("Mode");
+
+        // 3. Safely Destroy Objects
+        if (_gmObject != null) Object.DestroyImmediate(_gmObject);
+        if (_dummyPlayerPaddle != null) Object.DestroyImmediate(_dummyPlayerPaddle);
+        if (_dummyComputerPaddle != null) Object.DestroyImmediate(_dummyComputerPaddle);
+        if (_dummyBall != null) Object.DestroyImmediate(_dummyBall);
+    }
+
+    // --- MOCK LISTENERS ---
+
+    private void MockResetRoundListener()
+    {
+        _isResetRoundFired = true;
+    }
+
     private void MockScoreListener(int playerIndex, int newScore)
     {
         _eventFired = true;
@@ -23,142 +85,143 @@ public class GameManagerTest
         _recordedScore = newScore;
     }
 
-     private void MockGameOverListener(int _winnerplayerIndex)
+    private void MockGameOverListener(int _winnerplayerIndex)
     {
         _isGameOverEventFired = true;
         _recordedWinnerIndex = _winnerplayerIndex;
     }
 
+    // --- TESTS ---
+
+    [Test]
+    public void Resetround_WhenPlayerScores_TriggersResetRoundEvent()
+    {
+        // Arrange
+        GameManager.OnRoundReset += MockResetRoundListener;
+
+        // Act
+        _gm.PlayerScore();
+
+        // Assert
+        Assert.IsTrue(_isResetRoundFired, "The reset round event did not fire!");
+    }
+
+    [Test]
+    public void Resetround_WhenComputerScores_TriggersResetRoundEvent()
+    {
+        // Arrange
+        GameManager.OnRoundReset += MockResetRoundListener;
+
+        // Act
+        _gm.ComputerScore();
+
+        // Assert
+        Assert.IsTrue(_isResetRoundFired, "The reset round event did not fire!");
+    }
+
     [Test]
     public void PlayerScore_ReachedWinCondtion_TriggersGameOverEvent()
     {
-        // 1. ARRANGE: Set up the environment
-        GameObject gmObject = new GameObject("TestGameManager");
-        GameManager gm = gmObject.AddComponent<GameManager>();
-
-        //Creating Dummy game objects for ball, PlayerPaddle, CoputerPaddle.To pass the NullPointerException.
-        GameObject dummyPlayerPaddle = new GameObject("DummyPlayerPaddle");
-        GameObject dummyComputerPaddle = new GameObject("DummyComputerPaddle");
-        GameObject dummyBall = new GameObject("DummyBall");
-
-        //Rigidbody is assigned to them to avoid NullPointerException when the Paddle tries to access them.
-        dummyPlayerPaddle.AddComponent<Rigidbody2D>();
-        dummyComputerPaddle.AddComponent<Rigidbody2D>();
-        dummyBall.AddComponent<Rigidbody2D>();
-
-        // Assign the dummy objects to the GameManager
-        gm.playerPaddle = dummyPlayerPaddle.AddComponent<Paddle>();
-        gm.computerPaddle = dummyComputerPaddle.AddComponent<Paddle>();
-        gm.ball = dummyBall.AddComponent<Ball>();
-
-        _isGameOverEventFired = false;
-
-        // Subscribe to the OnGameOver event
+        // Arrange
         GameManager.OnGameWon += MockGameOverListener;
 
-        // 2. ACT: Force the player to score until they reach the win condition
-        for (int i = 0; i < gm.pointsToWin; i++)
+        // Act
+        for (int i = 0; i < _gm.pointsToWin; i++)
         {
-            gm.PlayerScore();
+            _gm.PlayerScore();
         }
 
-        // 3. ASSERT: Check if the game over event was fired and the correct winner index was recorded
+        // Assert
         Assert.IsTrue(_isGameOverEventFired, "The game over event did not fire!");
         Assert.AreEqual(1, _recordedWinnerIndex, "The event broadcasted the wrong winner index!");
-
-        // 4. CLEANUP: Destroy the object and unsubscribe so it doesn't affect other tests
-        GameManager.OnGameWon -= MockGameOverListener; 
-        Object.DestroyImmediate(gmObject);
-        Object.DestroyImmediate(dummyPlayerPaddle);
-        Object.DestroyImmediate(dummyComputerPaddle);
-        Object.DestroyImmediate(dummyBall);
     }
 
+    [Test]
+    public void ComputerScore_ReachedWinCondition_TriggersGameOverEvent()
+    {
+        // Arrange
+        GameManager.OnGameWon += MockGameOverListener;
 
-    // A Test behaves as an ordinary method
+        // Act
+        for (int i = 0; i < _gm.pointsToWin; i++)
+        {
+            _gm.ComputerScore();
+        }
+
+        // Assert
+        Assert.IsTrue(_isGameOverEventFired, "The Game Over event did not fire!");
+        Assert.AreEqual(2, _recordedWinnerIndex, "The event broadcasted the wrong winner index!");
+    }
+
     [Test]
     public void PlayerScore_IncrementsScore_AndFiresEvent()
     {
-        // 1. ARRANGE: Set up the environment
-        GameObject gmObject = new GameObject("TestGameManager");
-        GameManager gm = gmObject.AddComponent<GameManager>();
-
-        //Creating Dummy game objects for ball, PlayerPaddle, CoputerPaddle.To pass the NullPointerException.
-        GameObject dummyPlayerPaddle = new GameObject("DummyPlayerPaddle");
-        GameObject dummyComputerPaddle = new GameObject("DummyComputerPaddle");
-        GameObject dummyBall = new GameObject("DummyBall");
-
-        //Rigidbody is assigned to them to avoid NullPointerException when the Paddle tries to access them.
-        dummyPlayerPaddle.AddComponent<Rigidbody2D>();
-        dummyComputerPaddle.AddComponent<Rigidbody2D>();
-        dummyBall.AddComponent<Rigidbody2D>();
-
-        // Assign the dummy objects to the GameManager
-        gm.playerPaddle = dummyPlayerPaddle.AddComponent<Paddle>();
-        gm.computerPaddle = dummyComputerPaddle.AddComponent<Paddle>();
-        gm.ball = dummyBall.AddComponent<Ball>();
-
-        _eventFired = false;
-
-        // Subscribe our fake listener to the event
+        // Arrange
         GameManager.OnScoreUpdated += MockScoreListener;
 
-        // 2. ACT: Force the player to score
-        gm.PlayerScore();
+        // Act
+        _gm.PlayerScore();
 
-        // 3. ASSERT: Prove that the code did what it was supposed to do
+        // Assert
         Assert.IsTrue(_eventFired, "The score event did not fire!");
         Assert.AreEqual(1, _recordedPlayerIndex, "The event broadcasted the wrong player index!");
         Assert.AreEqual(1, _recordedScore, "The score did not increment to 1!");
-
-        // 4. CLEANUP: Destroy the object and unsubscribe so it doesn't affect other tests
-        GameManager.OnScoreUpdated -= MockScoreListener;
-        Object.DestroyImmediate(gmObject);
-        Object.DestroyImmediate(dummyPlayerPaddle);
-        Object.DestroyImmediate(dummyComputerPaddle);
-        Object.DestroyImmediate(dummyBall);
     }
+
     [Test]
     public void ComputerScore_IncrementScore_AndFiresEvent()
     {
-        // 1. Arrangen : Set Up the environment
-        GameObject gmObject = new GameObject("TestGameManager");
-        GameManager gm = gmObject.AddComponent<GameManager>();
-
-        //Creating Dummy game objects for ball, PlayerPaddle, CoputerPaddle.To pass the NullPointerException.
-        GameObject dummyPlayerPaddle = new GameObject("DummyPlayerPaddle");
-        GameObject dummyComputerPaddle = new GameObject("DummyComputerPaddle");
-        GameObject dummyBall = new GameObject("DummyBall");
-
-        //RigidBody Assigment
-        dummyPlayerPaddle.AddComponent<Rigidbody2D>();
-        dummyComputerPaddle.AddComponent<Rigidbody2D>();
-        dummyBall.AddComponent<Rigidbody2D>();
-
-        // Assign the dummy objects to the GameManager
-        gm.playerPaddle = dummyPlayerPaddle.AddComponent<Paddle>();
-        gm.computerPaddle = dummyComputerPaddle.AddComponent<Paddle>();
-        gm.ball = dummyBall.AddComponent<Ball>();
-
-        _eventFired = false;
-
-        // Subscribe our fake listener to the event
+        // Arrange
         GameManager.OnScoreUpdated += MockScoreListener;
 
-        // 2. ACT: Force the computer to score
-        gm.ComputerScore();
+        // Act
+        _gm.ComputerScore();
 
-        // 3. ASSERT: Prove that the code did what it was supposed to do
-        Assert.IsTrue(_eventFired, "The Score event didn't Fire!");
+        // Assert
+        Assert.IsTrue(_eventFired, "The Score event didn't fire!");
         Assert.AreEqual(2, _recordedPlayerIndex, "The event broadcasted the wrong player index!");
         Assert.AreEqual(1, _recordedScore, "The score did not increment to 1!");
-
-        // 4. CLEANUP: Destroy the object and unsubscribe so it doesn't affect other tests
-        GameManager.OnScoreUpdated -= MockScoreListener;
-        Object.DestroyImmediate(gmObject);
-        Object.DestroyImmediate(dummyPlayerPaddle);
-        Object.DestroyImmediate(dummyComputerPaddle);
-        Object.DestroyImmediate(dummyBall);
     }
 
-}   
+    [Test]
+    public void PlayAgain_WhenCalled_ResetsTimeScaleToOne()
+    {
+        // Arrange
+        Time.timeScale = 0;
+
+        // Act 
+        try
+        {
+            _gm.PlayAgain();
+        }
+        catch (System.InvalidOperationException)
+        {
+            // Intentional catch for SceneManager in EditMode
+        }
+
+        // Assert
+        Assert.AreEqual(1f, Time.timeScale, "Time.timeScale was not reset to 1!");
+    }
+
+    [Test]
+    public void MainMenu_WhenCalled_ResetsTimeScaleToOneAndPlayerPrefsToMode()
+    {
+        // Arrange
+        Time.timeScale = 0;
+        PlayerPrefs.SetInt("Mode", 2);
+
+        // Act 
+        try
+        {
+            _gm.MainMenu();
+        }
+        catch (System.InvalidOperationException)
+        {
+            // Intentional catch for SceneManager in EditMode
+        }
+
+        // Assert
+        Assert.AreEqual(1f, Time.timeScale, "Time.timeScale was not reset to 1!");
+        Assert.IsFalse(PlayerPrefs.HasKey("Mode"), "PlayerPrefs still contains the 'Mode' key!");
+    }
+}
