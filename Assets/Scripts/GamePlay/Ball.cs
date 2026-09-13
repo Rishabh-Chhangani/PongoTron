@@ -27,10 +27,17 @@ public class Ball : MonoBehaviour
     }
     private void Start()
     {
-       
-        AddInitialForce();
+
+        InitializeComponents();
     }
 
+    public void InitializeComponents()
+    {
+        if (_rigidbody == null)
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
+    }
 
     public void ResetPosition()
     {
