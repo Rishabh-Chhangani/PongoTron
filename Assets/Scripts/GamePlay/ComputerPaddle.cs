@@ -119,6 +119,28 @@ public class ComputerPaddle : Paddle
             return;
         }
 
+        float targetY = CalculateTargetY();
+
+        CalculateMovementDirection(targetY);
+       
+    }
+
+    public float GetPredictedY()
+    {
+        if (currentPrediction <= 0.0f || ball.velocity.x <= 0.0f)
+        {
+            return ball.position.y;
+        }
+
+        float distanceX = Mathf.Abs(transform.position.x - ball.position.x);
+        float time = distanceX / Mathf.Abs(ball.velocity.x);
+        float predictedY = ball.position.y + ball.velocity.y * time * currentPrediction;
+        return predictedY;
+    }
+
+
+    public float CalculateTargetY()
+    {
         float targetY;
         if (ball.velocity.x > 0.0f)
         {
@@ -131,6 +153,11 @@ public class ComputerPaddle : Paddle
 
         targetY += Random.Range(-0.2f, 0.2f) * (3 - difficulty);
 
+        return targetY;
+    }
+
+    public void CalculateMovementDirection(float targetY)
+    {
         float diff = targetY - _rigidbody.position.y;
 
 
@@ -149,20 +176,5 @@ public class ComputerPaddle : Paddle
             _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, targetVel, 0.1f);
         }
     }
-
-    public float GetPredictedY()
-    {
-        if (currentPrediction <= 0.0f || ball.velocity.x <= 0.0f)
-        {
-            return ball.position.y;
-        }
-
-        float distanceX = Mathf.Abs(transform.position.x - ball.position.x);
-        float time = distanceX / Mathf.Abs(ball.velocity.x);
-        float predictedY = ball.position.y + ball.velocity.y * time * currentPrediction;
-        return predictedY;
-    }
-
-
    
 }
