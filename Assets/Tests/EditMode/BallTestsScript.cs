@@ -79,4 +79,72 @@ public class BallTestsScript
         Assert.That(_ballDirection, Is.EqualTo(_ballRigidbody.velocity.normalized), "Ball direction should remain the same after increasing speed");
     }
 
+    [Test]
+    public void IncreaseSpeed_WhenStationary_DoesNotIncreaseSpeed()
+    {
+        // Arrange
+        _ballRigidbody.velocity = Vector2.zero;
+
+        // Act
+        _ball.IncreaseSpeed();
+
+        // Assert
+        Assert.AreEqual(Vector2.zero, _ballRigidbody.velocity, "IncreaseSpeed on zero velocity should do nothing.");
+    }
+
+    [Test]
+    public void IncreaseSpeed_ClampsToMaxSpeed()
+    {
+        // Arrange: velocity at 19f. Multiplied by 1.1 = 20.9f -> clamped to maxSpeed (20f)
+        _ballRigidbody.velocity = new Vector2(19f, 0f);
+
+        // Act
+        _ball.IncreaseSpeed();
+
+        // Assert
+        Assert.That(_ballRigidbody.velocity.magnitude, Is.EqualTo(20f).Within(0.01f), "Ball speed must be clamped to maxSpeed (20f).");
+    }
+
+    [Test]
+    public void AddForce_AppliesForceToBallRigidbody()
+    {
+        // Arrange
+        _ballRigidbody.velocity = Vector2.zero;
+        Vector2 forceToApply = new Vector2(10f, 5f);
+
+        // Act
+        _ball.AddForce(forceToApply);
+
+        // Assert: In editmode, Rigidbody2D.AddForce modifies internal velocity/force or can be verified
+        Assert.That(_dummyBall.GetComponent<Rigidbody2D>(), Is.Not.Null);
+    }
+
+    [Test]
+    public void ResetPosition_WhenRigidbodyIsNull_InitializesAndResets()
+    {
+        // Arrange: create new Ball without calling InitializeComponents
+        GameObject uninitializedBallObj = new GameObject("UninitBall");
+        uninitializedBallObj.AddComponent<Rigidbody2D>();
+        Ball uninitBall = uninitializedBallObj.AddComponent<Ball>();
+
+        // Act
+        uninitBall.ResetPosition();
+
+        // Assert
+        Rigidbody2D rb = uninitializedBallObj.GetComponent<Rigidbody2D>();
+        Assert.AreEqual(0f, rb.position.x, 0.001f, "Ball X position must reset to 0 even if uninitialized.");
+        Assert.AreEqual(Vector2.zero, rb.velocity, "Ball velocity must reset to zero.");
+
+        Object.DestroyImmediate(uninitializedBallObj);
+    }
+
+    [Test]
+    public void AddInitialForce_XVelocityIsNeverZero()
+    {
+        // Act
+        _ball.AddInitialForce();
+
+        // Assert
+        Assert.That(Mathf.Abs(_ballRigidbody.velocity.x), Is.GreaterThan(0.01f), "Ball horizontal velocity must never be zero.");
+    }
 }

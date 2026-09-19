@@ -29,6 +29,7 @@ public class Ball : MonoBehaviour
     {
 
         InitializeComponents();
+        AddInitialForce();
     }
 
     public void InitializeComponents()

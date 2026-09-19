@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class ComputerPaddle : Paddle
@@ -19,7 +18,6 @@ public class ComputerPaddle : Paddle
     public float hardDeadZoneMin = 0.05f;
     public float hardDeadZoneMax = 0.15f;
 
-
     public float easyPredictionMin = 0.0f;
     public float easyPredictionMax = 0.5f;
 
@@ -29,14 +27,12 @@ public class ComputerPaddle : Paddle
     public float hardPredictionMin = 1.0f;
     public float hardPredictionMax = 1.4f;
 
-
     public float currentSpeed;
     public float currentDeadZone;
     public float currentPrediction;
 
     private int mode;
     private int difficulty;
-
     private int frameCount;
 
     private void Start()
@@ -45,43 +41,38 @@ public class ComputerPaddle : Paddle
         mode = PlayerPrefs.GetInt("Mode", 0);
         difficulty = PlayerPrefs.GetInt("Difficulty", 0);
 
-        if(mode == 0)
+        if (mode == 0) // 1-Player Mode (AI)
         {
-        if (difficulty == 0)
-        {
-            currentSpeed = speed;
-            currentDeadZone = Random.Range(easyDeadZoneMin, easyDeadZoneMax);
-            currentPrediction = Random.Range(easyPredictionMin, easyPredictionMax);
-            // Debug.Log("Easy mode selected");
-        }
-        else if (difficulty == 1)
-        {
-            currentSpeed = mediumSpeed;
-            currentDeadZone = Random.Range(mediumDeadZoneMin, mediumDeadZoneMax);
-            currentPrediction = Random.Range(mediumPredictionMin, mediumPredictionMax);
-            // Debug.Log("Medium mode selected");
-        }
-        else if (difficulty == 2)
-        {
-            currentSpeed = hardSpeed;
-            currentDeadZone = Random.Range(hardDeadZoneMin, hardDeadZoneMax);
-            currentPrediction = Random.Range(hardPredictionMin, hardPredictionMax);
-            // Debug.Log("Hard mode selected");
-        }
+            if (difficulty == 0)
+            {
+                currentSpeed = speed;
+                currentDeadZone = Random.Range(easyDeadZoneMin, easyDeadZoneMax);
+                currentPrediction = Random.Range(easyPredictionMin, easyPredictionMax);
+            }
+            else if (difficulty == 1)
+            {
+                currentSpeed = mediumSpeed;
+                currentDeadZone = Random.Range(mediumDeadZoneMin, mediumDeadZoneMax);
+                currentPrediction = Random.Range(mediumPredictionMin, mediumPredictionMax);
+            }
+            else if (difficulty == 2)
+            {
+                currentSpeed = hardSpeed;
+                currentDeadZone = Random.Range(hardDeadZoneMin, hardDeadZoneMax);
+                currentPrediction = Random.Range(hardPredictionMin, hardPredictionMax);
+            }
 
-
-        Debug.Log("Difficulty Selected: " + difficulty);
-        Debug.Log("Current Speed: " + currentSpeed);
-        Debug.Log("Current Dead Zone: " + currentDeadZone);
-        Debug.Log("Current Prediction: " + currentPrediction);
+            Debug.Log("Difficulty Selected: " + difficulty);
+            Debug.Log("Current Speed: " + currentSpeed);
+            Debug.Log("Current Dead Zone: " + currentDeadZone);
+            Debug.Log("Current Prediction: " + currentPrediction);
         }
     }
 
-     public void Update()
+    public void Update()
     {
-
         // 2-Player Mode Override (Player 2 controls)
-        if (PlayerPrefs.GetInt("Mode", 0) == 1)  // 2-player mode
+        if (PlayerPrefs.GetInt("Mode", 0) == 1)
         {
             Vector2 direction = Vector2.zero;
 
@@ -100,13 +91,18 @@ public class ComputerPaddle : Paddle
                 _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, Vector2.zero, 0.1f);
             }
 
-            return;  // Skip AI movement completely
+            return; // Exit update early
         }
     }
 
-
     private void FixedUpdate()
     {
+        // BUG FIX: Stop AI calculations if it's 2-Player mode
+        if (PlayerPrefs.GetInt("Mode", 0) == 1)
+        {
+            return;
+        }
+
         frameCount = (frameCount + 1) % 100; // Reset frame count every 100 frames to prevent overflow
 
         if (frameCount % (8 - difficulty * 2) == 0)
@@ -119,6 +115,25 @@ public class ComputerPaddle : Paddle
             return;
         }
 
+        float targetY = CalculateTargetY();
+        CalculateMovementDirection(targetY);
+    }
+
+    public float GetPredictedY()
+    {
+        if (currentPrediction <= 0.0f || ball.velocity.x <= 0.0f)
+        {
+            return ball.position.y;
+        }
+
+        float distanceX = Mathf.Abs(transform.position.x - ball.position.x);
+        float time = distanceX / Mathf.Abs(ball.velocity.x);
+        float predictedY = ball.position.y + ball.velocity.y * time * currentPrediction;
+        return predictedY;
+    }
+
+    public float CalculateTargetY()
+    {
         float targetY;
         if (ball.velocity.x > 0.0f)
         {
@@ -131,8 +146,12 @@ public class ComputerPaddle : Paddle
 
         targetY += Random.Range(-0.2f, 0.2f) * (3 - difficulty);
 
-        float diff = targetY - _rigidbody.position.y;
+        return targetY;
+    }
 
+    public void CalculateMovementDirection(float targetY)
+    {
+        float diff = targetY - _rigidbody.position.y;
 
         if (Mathf.Abs(diff) <= currentDeadZone)
         {
@@ -149,20 +168,4 @@ public class ComputerPaddle : Paddle
             _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, targetVel, 0.1f);
         }
     }
-
-    public float GetPredictedY()
-    {
-        if (currentPrediction <= 0.0f || ball.velocity.x <= 0.0f)
-        {
-            return ball.position.y;
-        }
-
-        float distanceX = Mathf.Abs(transform.position.x - ball.position.x);
-        float time = distanceX / Mathf.Abs(ball.velocity.x);
-        float predictedY = ball.position.y + ball.velocity.y * time * currentPrediction;
-        return predictedY;
-    }
-
-
-   
 }
