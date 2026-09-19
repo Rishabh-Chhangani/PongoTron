@@ -31,7 +31,7 @@ public class ComputerPaddlePlayModeTest
 
         // Create Ball GameObject
         _ballObject = new GameObject("Ball");
-
+                                                                                                        
         // Add Rigidbody2D FIRST and disable gravity
         _ballRigidbody = _ballObject.AddComponent<Rigidbody2D>();
         _ballRigidbody.gravityScale = 0f;
@@ -83,20 +83,23 @@ public class ComputerPaddlePlayModeTest
     public IEnumerator FixedUpdate_BallMovingAway_MovesPaddleTowardsCenter()
     {
         // Arrange
-        _paddleRigidbody.position = new Vector2(10f, 5f);
-        _ballRigidbody.position = new Vector2(0f, 0f);
+        // 1. Move the paddle far above the center (Y = 5). 
+        // Even with a +0.6 random offset, the target is below it, forcing it DOWN.
+        _paddleObject.transform.position = new Vector3(10f, 5f, 0f);
+        _paddleRigidbody.gravityScale = 0f;
 
-        // Ball moving away from the ComputerPaddle
-        _ballRigidbody.velocity = new Vector2(-5f, 0f);
+        // 2. Ensure the ball is moving LEFT (negative X), away from the right paddle
+        _ballObject.transform.position = Vector3.zero;
+        _ballRigidbody.velocity = new Vector2(-10f, 0f);
 
         // Act
-        yield return new WaitForFixedUpdate();
+        // 3. Yield enough times to safely bypass the AI's "frameCount % 8 == 0" frame skip
+        for (int i = 0; i < 4; i++)
+        {
+            yield return new WaitForFixedUpdate();
+        }
 
         // Assert
-        Assert.That(
-            _paddleRigidbody.velocity.y,
-            Is.LessThan(0f),
-            "Computer paddle should move downward towards the center when the ball is moving away."
-        );
+        Assert.That(_paddleRigidbody.velocity.y, Is.LessThan(0f), "Computer paddle should move downward towards the center when the ball is moving away.");
     }
 }
