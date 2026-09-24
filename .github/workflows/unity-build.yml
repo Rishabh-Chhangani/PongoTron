@@ -12,6 +12,17 @@ jobs:
   test-and-build:
     name: Test and Build PongTron for Windows
     runs-on: ubuntu-latest
+    # ADD THESE THREE LINES:
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - name: Checkout repository
+
+jobs:
+  test-and-build:
+    name: Test and Build PongTron for Windows
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
