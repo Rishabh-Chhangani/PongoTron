@@ -51,6 +51,7 @@ jobs:
           unityVersion: 2021.3.45f2
           targetPlatform: StandaloneWindows64
           buildName: PongTron-Windows
+          allowDirtyBuild: true
 
       - name: Upload Windows Build
         uses: actions/upload-artifact@v4
