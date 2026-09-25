@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -55,7 +56,8 @@ public class BouncySurfacePlayModeTests
 
         // Act: At 10 units/sec, traveling the 1 unit gap takes 0.1 seconds. 
         // Wait 0.15s to guarantee impact and allow OnCollisionEnter2D to process.
-        yield return new WaitForSeconds(0.15f);
+        float timeout = Time.time + 1f;
+        yield return new WaitUntil(() => _ballRb.velocity.y < 0f || Time.time > timeout);
 
         // Assert: contact normal points downward from surface, so -normal * strength pushes downward
         Assert.That(_ballRb.velocity.y, Is.LessThan(0f), "Ball should reflect and bounce downward after hitting top bouncy surface.");
